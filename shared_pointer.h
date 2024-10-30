@@ -12,14 +12,14 @@ private:
     size_t *referenceCount;
 
     void clean(){
-        if (referenceCount && --(*referenceCount) == 0) {
+        if (referenceCount && --(*referenceCount) == 0) {// !--*referenceCount (делает вторую часть условия)
             delete pointer;
             delete referenceCount;
         }
     }
 
 public:
-
+//убрать проверку на nullptr
     explicit SharedPointer(T *p = nullptr) : pointer(p), referenceCount(new size_t(1)) {}
 
     SharedPointer(const SharedPointer &other)

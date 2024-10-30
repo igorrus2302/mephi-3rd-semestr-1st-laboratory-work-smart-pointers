@@ -6,11 +6,13 @@ void printProgressBar(int current, int total) {
     float progress = (float)current / total;
     int pos = width * progress;
     std::cout << "[";
+
     for (int i = 0; i < width; ++i) {
         if (i < pos) std::cout << "=";
         else if (i == pos) std::cout << ">";
         else std::cout << " ";
     }
+
     std::cout << "] " << int(progress * 100.0) << " %\r";
     std::cout.flush();
 }

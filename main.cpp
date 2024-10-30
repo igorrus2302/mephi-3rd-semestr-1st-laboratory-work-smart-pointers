@@ -1,6 +1,4 @@
-#include <chrono>
 #include <iostream>
-#include "test_structure.h"
 #include "pointer_tests.h"
 
 int main() {

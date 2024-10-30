@@ -28,6 +28,8 @@ std::string startUniquePointerTests() {
         }
     }
 
+    //проверить оператор индексации
+
     result << "  Functional test 2 (release test): ";
     {
         try {
@@ -67,7 +69,11 @@ std::string startUniquePointerTests() {
             result << "Failed with unknown exception\n";
         }
     }
-
+//убрать копипаст с нагрузочных тестов
+//убрать try-catch
+//изучить try-catch в случае выброса неизвестных исключений
+//переименовать start функции
+//рекомендации убрать ostring (рекомендация)
     result << "  Load test 2 (medium): ";
     {
         try {
