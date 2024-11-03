@@ -1,13 +1,8 @@
-#include "pointer_tests.h"
+#include "menu.h"
 
 int main() {
 
-    UniquePointerTests();
-    StdUniquePointerTests();
-    LinkedListUniquePointerTests();
-    SharedPointerTests();
-    StdSharedPointerTests();
-    LinkedListSharedPointerTests();
+    openMenu();
 
     return 0;
 }
