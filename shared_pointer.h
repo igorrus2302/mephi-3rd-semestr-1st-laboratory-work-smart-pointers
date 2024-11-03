@@ -9,10 +9,10 @@ class SharedPointer {
 private:
 
     T* pointer;
-    size_t *referenceCount;
+    size_t* referenceCount;
 
-    void clean(){
-        if (referenceCount && --(*referenceCount) == 0) {// !--*referenceCount (делает вторую часть условия)
+    void clean() {
+        if (referenceCount && --(*referenceCount) == 0) {
             delete pointer;
             delete referenceCount;
         }
@@ -20,16 +20,16 @@ private:
 
 public:
 
-    explicit SharedPointer(T *p = nullptr) : pointer(p), referenceCount(new size_t(1)) {}
+    explicit SharedPointer(T* p = nullptr) : pointer(p), referenceCount(new size_t(1)) {}
 
-    SharedPointer(const SharedPointer &other)
+    SharedPointer(const SharedPointer& other)
             : pointer(other.pointer), referenceCount(other.referenceCount) {
         if (referenceCount) {
             ++(*referenceCount);
         }
     }
 
-    SharedPointer &operator=(const SharedPointer &other) {
+    SharedPointer& operator=(const SharedPointer& other) {
         if (this != &other) {
             clean();
             pointer = other.pointer;
@@ -38,7 +38,6 @@ public:
                 ++(*referenceCount);
             }
         }
-
         return *this;
     }
 
@@ -46,17 +45,27 @@ public:
         clean();
     }
 
-    T &operator*() const {
-        return *pointer;
-    }
-
-    T *operator->() const {
+    T* get() const {
         return pointer;
     }
 
-    size_t use_count() const { return referenceCount ? *referenceCount : 0; }
+    size_t* use_count_ptr() const {
+        return referenceCount;
+    }
 
-    void reset(T *p = nullptr) {
+    T& operator*() const {
+        return *pointer;
+    }
+
+    T* operator->() const {
+        return pointer;
+    }
+
+    size_t use_count() const {
+        return referenceCount ? *referenceCount : 0;
+    }
+
+    void reset(T* p = nullptr) {
         clean();
         pointer = p;
         referenceCount = new size_t(1);
@@ -65,7 +74,21 @@ public:
     bool null() const {
         return pointer == nullptr;
     }
+
+    template<typename U>
+    static SharedPointer<T> static_pointer_cast(const SharedPointer<U>& other) {
+        return SharedPointer<T>(static_cast<T*>(other.get()), other.use_count_ptr());
+    }
+
+private:
+
+    SharedPointer(T* p, size_t* refCount) : pointer(p), referenceCount(refCount) {
+        if (referenceCount) {
+            ++(*referenceCount);
+        }
+    }
 };
+
 
 template<typename T>
 class SharedPointer<T[]> {
@@ -128,5 +151,22 @@ public:
 
     bool null() const {
         return pointer == nullptr;
+    }
+
+    T* get() const {
+        return pointer;
+    }
+
+    template<typename U>
+    static SharedPointer<T[]> static_pointer_cast(const SharedPointer<U[]>& other) {
+        return SharedPointer<T[]>(static_cast<T*>(other.get()), other.use_count_ptr());
+    }
+
+private:
+
+    SharedPointer(T* p, size_t* refCount) : pointer(p), referenceCount(refCount) {
+        if (referenceCount) {
+            ++(*referenceCount);
+        }
     }
 };

@@ -59,6 +59,52 @@ void UniquePointerTests() {
             }
     }
 
+    std::cout << "  Functional test 4 (subtipization test): ";
+    {
+        try {
+            class C2 {
+            public:
+                virtual int getValue() const {
+                    return 20;
+                }
+                virtual ~C2() = default;
+            };
+
+            class C1 : public C2 {
+            public:
+                int getValue() const override {
+                    return 30;
+                }
+            };
+
+            class C3 : public C2 {
+            public:
+                int getValue() const override {
+                    return 40;
+                }
+            };
+
+            UniquePointer<C1> derivedPtr1(new C1());
+            UniquePointer<C2> basePtr1 = std::move(derivedPtr1);
+
+            assert(derivedPtr1.null());
+            assert(basePtr1.get()->getValue() == 30);
+            assert(basePtr1.get()->getValue() == 30);
+
+            UniquePointer<C3> derivedPtr2(new C3());
+            UniquePointer<C2> basePtr2 = std::move(derivedPtr2);
+
+            assert(derivedPtr2.null());
+            assert(basePtr2.get()->getValue() == 40);
+
+            std::cout << "Passed\n";
+        } catch (const std::exception &e) {
+            std::cout << "Failed with exception: " << e.what() << "\n";
+        } catch (...) {
+            std::cout << "Failed with unknown exception\n";
+        }
+    }
+
     std::cout << "  Load test 1 (small): ";
     {
         int testSize = 1000;
@@ -112,6 +158,42 @@ void SharedPointerTests() {
             SharedPointer<int> p1(new int(10));
             SharedPointer<int> p2(p1);
             std::cout << (*p2 == 10 && *p2 == 10 ? "Passed" : "Failed") << "\n";
+        } catch (const std::exception &e) {
+            std::cout << "Failed with exception: " << e.what() << "\n";
+        } catch (...) {
+            std::cout << "Failed with unknown exception\n";
+        }
+    }
+
+    std::cout << "  Functional test 4 (subtipization test): ";
+    {
+        try {
+            class C1 {
+            public:
+                virtual int getValue() const {
+                    return 10;
+                }
+                virtual ~C1() = default;
+            };
+
+            class C2 : public C1 {
+            public:
+                int getValue() const override {
+                    return 20;
+                }
+            };
+
+            SharedPointer<C1> derivedPtr1(new C2());
+            SharedPointer<C2> basePtr1 = SharedPointer<C2>::static_pointer_cast(derivedPtr1);
+
+            assert(basePtr1.use_count() == 2);
+
+            SharedPointer<C2> basePtr2 = basePtr1;
+
+            assert(basePtr1.use_count() == 3);
+            assert(basePtr1->getValue() == 20);
+
+            std::cout << "Passed" << std::endl;
         } catch (const std::exception &e) {
             std::cout << "Failed with exception: " << e.what() << "\n";
         } catch (...) {

@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <utility>
+#include <type_traits>
 
 template<typename T>
 class UniquePointer {
@@ -34,6 +35,21 @@ public:
         return *this;
     }
 
+    template<typename U>
+    UniquePointer(UniquePointer<U> &&other) noexcept
+    requires std::is_convertible_v<U*, T*>
+            : pointer(static_cast<T*>(other.release())) {}
+
+    template<typename U>
+    UniquePointer &operator=(UniquePointer<U> &&other) noexcept
+    requires std::is_convertible_v<U*, T*> {
+        if (this != reinterpret_cast<UniquePointer*>(&other)) {
+            delete pointer;
+            pointer = static_cast<T*>(other.release());
+        }
+        return *this;
+    }
+
     T &operator*() const {
         return *pointer;
     }
@@ -59,6 +75,10 @@ public:
 
     bool null() const {
         return pointer == nullptr;
+    }
+
+    T* get() const {
+        return pointer;
     }
 };
 
@@ -93,6 +113,21 @@ public:
         return *this;
     }
 
+    template<typename U>
+    UniquePointer(UniquePointer<U[]> &&other) noexcept
+    requires std::is_convertible_v<U*, T*>
+            : pointer(static_cast<T*>(other.release())) {}
+
+    template<typename U>
+    UniquePointer &operator=(UniquePointer<U[]> &&other) noexcept
+    requires std::is_convertible_v<U*, T*> {
+        if (this != reinterpret_cast<UniquePointer*>(&other)) {
+            delete[] pointer;
+            pointer = static_cast<T*>(other.release());
+        }
+        return *this;
+    }
+
     T &operator*() const {
         return *pointer;
     }
@@ -118,5 +153,9 @@ public:
 
     bool null() const {
         return pointer == nullptr;
+    }
+
+    T* get() const {
+        return pointer;
     }
 };
