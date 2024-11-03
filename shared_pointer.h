@@ -19,7 +19,7 @@ private:
     }
 
 public:
-//убрать проверку на nullptr
+
     explicit SharedPointer(T *p = nullptr) : pointer(p), referenceCount(new size_t(1)) {}
 
     SharedPointer(const SharedPointer &other)

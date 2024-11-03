@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 
-std::string startUniquePointerTests();
-std::string startStdUniquePointerTests();
-std::string startLinkedListUniquePointerTests();
-std::string startSharedPointerTests();
-std::string startStdSharedPointerTests();
-std::string startLinkedListSharedPointerTests();
+void UniquePointerTests();
+void StdUniquePointerTests();
+void LinkedListUniquePointerTests();
+void SharedPointerTests();
+void StdSharedPointerTests();
+void LinkedListSharedPointerTests();

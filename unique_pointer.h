@@ -42,8 +42,8 @@ public:
         return pointer;
     }
 
-    T &operator[]() const {
-        return (*pointer)[];
+    T &operator[](std::size_t index) const {
+        return (*pointer)[index];
     }
 
     void reset(T *p = nullptr) {
@@ -101,8 +101,8 @@ public:
         return pointer;
     }
 
-    T &operator[]() const {
-        return (*pointer)[];
+    T &operator[](std::size_t index) const {
+        return pointer[index];
     }
 
     void reset(T *p = nullptr) {

@@ -11,4 +11,6 @@ add_executable(3semestr_1laboratory main.cpp
         test_structure.h
         progress_bar.h
         progress_bar.cpp
+        load_tests.h
+        load_tests.cpp
 )
